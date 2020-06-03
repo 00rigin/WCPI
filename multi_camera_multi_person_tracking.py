@@ -68,7 +68,7 @@ def run(params, capture, detector, reid, jot): #params : args 임
         output_video = None
 
     print("##################################################################")
-
+    
     while thread_body.process:
         
         start = time.time()
@@ -115,7 +115,7 @@ def run(params, capture, detector, reid, jot): #params : args 임
                 break
         if output_video:
             output_video.write(cv.resize(vis, video_output_size))
-
+    jot.check_jot(tracked_objects, frames, track_data)
     thread_body.process = False
     frames_thread.join()
 
@@ -146,8 +146,8 @@ def main():
     parser.add_argument('--config', type=str, default='config.py', required=False)
     parser.add_argument('--history_file', type=str, default='', required=False)
 
-    parser.add_argument('-d', '--device', type=str, default='CPU')
-    #parser.add_argument('-d', '--device', type=str, default='MYRIAD')
+    #parser.add_argument('-d', '--device', type=str, default='CPU')
+    parser.add_argument('-d', '--device', type=str, default='MYRIAD')
     parser.add_argument('-l', '--cpu_extension',
                         help='MKLDNN (CPU)-targeted custom layers.Absolute \
                               path to a shared library with the kernels impl.',
@@ -178,7 +178,7 @@ def main():
     # 20200511 추가
     jot = JotTable()
     run(args, capture, person_detector, person_recognizer, jot)
-
+    #class mQTT check
     log.info('Demo finished successfully')
 
     

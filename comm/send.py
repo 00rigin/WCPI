@@ -3,38 +3,38 @@ from collections import OrderedDict
 import codecs
 import numpy as np
 from collections import namedtuple
-
+import comm.mqtt as mp
+import paho.mqtt.client as mqtt
 from comm.numpy_json_encoder import NumpyEncoder
 
 class SEND:
     def __init__(self):
         self.pi_filepath = "pi_jot.json"
         self.srv_filepath = "srv_jot.json"
-
+        self.client = mp.get_mqtt_client() # why so slow?
 
     def table_file(self,send_table, flag):
-        
-        
         if(flag == "pi"):
-            json.dump({'id' : send_table[0],
+            data = {'id' : send_table[0],
                         'f_cluster_mat': send_table[1].tolist(),
-                        'avg_feature': send_table[2].tolist(),
-                        }, 
-                        codecs.open(self.pi_filepath, 'w', encoding='utf-16'))
+                        'avg_feature': send_table[2].tolist()}
+            data = json.dumps(data)
             print("dump sucess")
+            mp.publish_msg(self.client,data)
+            
         
         elif(flag == "srv"):
             for i in range(len(send_table)):
                 send_table[i] = str(send_table[i])
 
-            json.dump({'p_id' : send_table[0],
+            data={'p_id' : send_table[0],
                         'cam_id' : send_table[1],
                         'start_time1' : send_table[2],
                         'end_time1' : send_table[3],
-                        'pic': self.t_pic[int(send_table[0])].tolist()
-                        }, 
-                        codecs.open(self.srv_filepath, 'w', encoding='utf-8'))
+                        'pic': self.t_pic[int(send_table[0])].tolist()}
             
+            data = json.dumps(data)
+            mp.publish_msg(self.client,data)
 
 
         # 복구용
