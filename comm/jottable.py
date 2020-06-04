@@ -20,6 +20,8 @@ class JotTable:
         self.th_hold = 3.0
         self.t_pic = []
         self.client = mp.initialize_mqtt()
+        self.client1 = mp.initialize_mqtt()
+        self.client2 = mp.initialize_mqtt()
     #####func comment
 
     def check_jot(self, tracked_objects, frames, tracks_data):
@@ -89,20 +91,30 @@ class JotTable:
                 f_cluster_mat = track['f_cluster'].get_clusters_matrix() #f_cluster 의 진짜 모습 두둥!!
                 avg_feature = track['avg_feature']
                 # 리스트로 저장시
-                print(type(f_cluster_mat), type(avg_feature))
-                data = {'f_cluster_mat' : f_cluster_mat.tolist(),
-                        'avg_feature' : avg_feature.tolist(),
-                        'p_id' : send_table[0],
-                        'cam_id' : send_table[1],
-                        'start_time1' : send_table[2],
-                        'end_time1' : send_table[3],
-                        'pic': self.t_pic[int(send_table[0])].tolist()}
-        
-                data = json.dumps(data)
-                print("dump sucess")
-                mp.publish_msg(self.client,data)
+                # print(type(f_cluster_mat), type(avg_feature))
+                                
+                #print("dump sucess")
+                
+                data_cluster = {'p_id' : send_table[0],
+                                'f_cluster_mat' : f_cluster_mat.tolist(),
+                                'avg_feature' : avg_feature.tolist()}
+                data_pic = {'p_id' : send_table[0],
+                            'cam_id' : send_table[1],
+                            'start_time1' : send_table[2],
+                            'end_time1' : send_table[3],
+                            'pic': self.t_pic[int(send_table[0])].tolist()}
+                
+                #data = json.dumps(data)
+                data_cluster = json.dumps(data_cluster)
+                data_pic = json.dumps(data_pic)
+                print("dump success")
+                #mp.publish_msg(self.client,data)
+                mp.publish_msg_srv(self.client1,data_cluster)
+                mp.publish_msg_pi(self.client2,data_pic)
+                
             else:
                 continue
+                
         
        
             

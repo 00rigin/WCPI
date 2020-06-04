@@ -8,7 +8,7 @@ import numpy as np
 MQTT_Broker = "127.0.0.1"
 MQTT_Port = 1883
 Keep_Alive_Interval = 45
-MQTT_Topic = "camera/"
+MQTT_Topic = [("camera/cluster",0),("camera/image",0)]
 #MQTT_Topic_pi = "camera/cluster"
 #MQTT_Topic_srv = "camera/image"
 mqttc = mqtt.Client()
@@ -27,23 +27,17 @@ def on_message(mosq, obj, msg):
    #print("Data: " + str(msg.payload.decode("utf-8")))
    data = msg.payload.decode("utf-8")
    json_load = json.loads(data)
-   pic_restored = np.array(json_load['pic'], dtype=np.uint8)
-   p_id_restored = int(json_load['p_id'])
-   cam_id_restored = int(json_load['cam_id'])
-   s_time_restored = str(json_load['start_time1'])
-   e_time_restored = str(json_load['end_time1'])
+   
    
    # 20200603 data that sending to pi
+   p_id_restored = int(json_load['p_id'])
    f_cluster_mat_restored = np.array(json_load['f_cluster_mat'], dtype = np.float32)
    avg_feature_restored = np.array(json_load['avg_feature'], dtype = np.float32)
    
-   print("p_id : ", p_id_restored)
-   print("cam_id : ", cam_id_restored)
-   print("s_time : ", s_time_restored)
-   print("e_time : ", e_time_restored)
-   #cv.imshow("restored", pic_restored)
+   
    
    print("******************************")
+   print("p_id : ", p_id_restored)
    print("f_cluster_mat_restored : ", f_cluster_mat_restored)
    print("avg_feature_restored : ", avg_feature_restored)
 

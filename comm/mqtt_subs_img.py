@@ -8,7 +8,7 @@ import numpy as np
 MQTT_Broker = "127.0.0.1"
 MQTT_Port = 1883
 Keep_Alive_Interval = 45
-MQTT_Topic = "camera/"
+MQTT_Topic = [("camera/cluster",0),("camera/image",0)]
 #MQTT_Topic_pi = "camera/cluster"
 #MQTT_Topic_srv = "camera/image"
 mqttc = mqtt.Client()
@@ -33,9 +33,7 @@ def on_message(mosq, obj, msg):
    s_time_restored = str(json_load['start_time1'])
    e_time_restored = str(json_load['end_time1'])
    
-   # 20200603 data that sending to pi
-   f_cluster_mat_restored = np.array(json_load['f_cluster_mat'], dtype = np.float32)
-   avg_feature_restored = np.array(json_load['avg_feature'], dtype = np.float32)
+   
    
    print("p_id : ", p_id_restored)
    print("cam_id : ", cam_id_restored)
@@ -43,9 +41,6 @@ def on_message(mosq, obj, msg):
    print("e_time : ", e_time_restored)
    #cv.imshow("restored", pic_restored)
    
-   print("******************************")
-   print("f_cluster_mat_restored : ", f_cluster_mat_restored)
-   print("avg_feature_restored : ", avg_feature_restored)
 
 
 def on_disconnect(client, userdata, flags, rc=0):
@@ -64,6 +59,6 @@ mqttc.on_message = on_message
 
 #연결
 mqttc.connect(MQTT_Broker, int(MQTT_Port), int(Keep_Alive_Interval))
-mqttc.subscribe((MQTT_Topic,0))
+mqttc.subscribe(MQTT_Topic,1)
 # 네트위크 이벤트 루푸를 지속시킨다
 mqttc.loop_forever()

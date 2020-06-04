@@ -149,7 +149,7 @@ class MultiCameraTracker:
 
     def _release_global_id(self, id):
         #20200529 1000번 아이디 왔을 때 0번 아이디 에러 처리 위해 잠시 지움.
-        #assert id <= self.last_global_id
+        assert id <= self.last_global_id
         self.global_ids_queue.put(id)
 
     def get_tracked_objects(self):
