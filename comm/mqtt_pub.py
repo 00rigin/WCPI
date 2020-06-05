@@ -3,7 +3,8 @@
 import paho.mqtt.client as mqtt
 import time
 
-MQTT_Broker = "127.0.0.1"
+MQTT_Broker = "172.30.1.49"
+#MQTT_Broker = "127.0.0.1"
 MQTT_Port = 1883
 Keep_Alive_Interval = 45
 MQTT_Topic = "camera/"

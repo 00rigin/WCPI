@@ -8,7 +8,8 @@ import numpy as np
 MQTT_Broker = "127.0.0.1"
 MQTT_Port = 1883
 Keep_Alive_Interval = 45
-MQTT_Topic = [("camera/cluster",0),("camera/image",0)]
+MQTT_Topic = "camera/"
+#MQTT_Topic = [("camera/cluster",0),("camera/image",0)]
 #MQTT_Topic_pi = "camera/cluster"
 #MQTT_Topic_srv = "camera/image"
 mqttc = mqtt.Client()
