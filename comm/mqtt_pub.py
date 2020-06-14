@@ -3,13 +3,13 @@
 import paho.mqtt.client as mqtt
 import time
 
-MQTT_Broker = "172.30.1.49"
+MQTT_Broker = "192.168.1.139"
 #MQTT_Broker = "127.0.0.1"
-MQTT_Port = 1883
-Keep_Alive_Interval = 45
-MQTT_Topic = "camera/"
-MQTT_Topic_pi = "camera/cluster"
-MQTT_Topic_srv = "camera/image"
+MQTT_Port = 8002
+Keep_Alive_Interval = 100
+MQTT_Topic = "camera/cam2"
+#MQTT_Topic_pi = "camera/cluster"
+#MQTT_Topic_srv = "camera/image"
 
 def on_connect(client, userdata, flags, rc):
     # print(f"CONNACK received with code {rc}")

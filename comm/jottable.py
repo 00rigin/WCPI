@@ -10,7 +10,7 @@ import json
 from collections import OrderedDict
 import codecs
 import comm.mqtt_pub as mp
-
+import comm.mqtt_subs as ms 
 #from comm.send import SEND
 
 class JotTable:
@@ -116,6 +116,7 @@ class JotTable:
                 #data_pic = json.dumps(data_pic)
                 print("dump success")
                 mp.publish_msg(self.client,data)
+                
                 #mp.publish_msg_srv(self.client1,data_cluster)
                 #mp.publish_msg_pi(self.client2,data_pic)
                 

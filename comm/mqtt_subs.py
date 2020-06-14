@@ -5,10 +5,10 @@ import codecs
 import numpy as np
 #import cv2 as cv
 # MQTT 설정
-MQTT_Broker = "127.0.0.1"
-MQTT_Port = 1883
-Keep_Alive_Interval = 45
-MQTT_Topic = "camera/"
+MQTT_Broker = "192.168.1.139"
+MQTT_Port = 8002
+Keep_Alive_Interval = 100
+MQTT_Topic = "camera/cam1"
 #MQTT_Topic_pi = "camera/cluster"
 #MQTT_Topic_srv = "camera/image"
 mqttc = mqtt.Client()
@@ -27,20 +27,20 @@ def on_message(mosq, obj, msg):
    #print("Data: " + str(msg.payload.decode("utf-8")))
    data = msg.payload.decode("utf-8")
    json_load = json.loads(data)
-   pic_restored = np.array(json_load['pic'], dtype=np.uint8)
+   #pic_restored = np.array(json_load['pic'], dtype=np.uint8)
    p_id_restored = int(json_load['p_id'])
-   cam_id_restored = int(json_load['cam_id'])
-   s_time_restored = str(json_load['start_time1'])
-   e_time_restored = str(json_load['end_time1'])
+   #cam_id_restored = int(json_load['cam_id'])
+   #s_time_restored = str(json_load['start_time1'])
+   #e_time_restored = str(json_load['end_time1'])
    
    # 20200603 data that sending to pi
    f_cluster_mat_restored = np.array(json_load['f_cluster_mat'], dtype = np.float32)
    avg_feature_restored = np.array(json_load['avg_feature'], dtype = np.float32)
    
    print("p_id : ", p_id_restored)
-   print("cam_id : ", cam_id_restored)
-   print("s_time : ", s_time_restored)
-   print("e_time : ", e_time_restored)
+   #print("cam_id : ", cam_id_restored)
+   #print("s_time : ", s_time_restored)
+   #print("e_time : ", e_time_restored)
    #cv.imshow("restored", pic_restored)
    
    print("******************************")
@@ -66,4 +66,4 @@ mqttc.on_message = on_message
 mqttc.connect(MQTT_Broker, int(MQTT_Port), int(Keep_Alive_Interval))
 mqttc.subscribe((MQTT_Topic,0))
 # 네트위크 이벤트 루푸를 지속시킨다
-mqttc.loop_forever()
+mqttc.loop_start()
