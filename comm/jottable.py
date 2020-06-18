@@ -97,7 +97,8 @@ class JotTable:
                 data = {'p_id' : send_table[0],
                         'f_cluster_mat' : f_cluster_mat.tolist(),
                         'avg_feature' : avg_feature.tolist(),
-                        'cam_id' : send_table[1],
+                        #'cam_id' : send_table[1],
+                        'cam_id' : 1,
                         'start_time1' : send_table[2],
                         'end_time1' : send_table[3],
                         'pic': self.t_pic[int(send_table[0])].tolist()}

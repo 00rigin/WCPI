@@ -149,25 +149,26 @@ class SingleCameraTracker:
                 pass
             else:
                 try:
-                    add_data = self.listq.pop(0)
-                    p_id_restored = int(add_data['p_id'])
-                    #np.array(json_load['f_cluster_mat'], dtype = np.float32)
-                    f_cluster_mat_restored = np.array(add_data['f_cluster_mat'], dtype = np.float64)
-                    avg_feature_restored = np.array(add_data['avg_feature'], dtype = np.float64)
-                    #str(data['avg_feature'])
-                    #test_ = str(data['start_time1'])
-                    print("p_id : ", p_id_restored)
-                    print("f_cluster_mat_restored : ", f_cluster_mat_restored)
-                    print("avg_feature_restored : ", avg_feature_restored)
+                    while (self.listq):
+                        add_data = self.listq.pop(0)
+                        p_id_restored = int(add_data['p_id'])
+                        #np.array(json_load['f_cluster_mat'], dtype = np.float32)
+                        f_cluster_mat_restored = np.array(add_data['f_cluster_mat'], dtype = np.float64)
+                        avg_feature_restored = np.array(add_data['avg_feature'], dtype = np.float64)
+                        #str(data['avg_feature'])
+                        #test_ = str(data['start_time1'])
+                        print("p_id : ", p_id_restored)
+                        print("f_cluster_mat_restored : ", f_cluster_mat_restored)
+                        print("avg_feature_restored : ", avg_feature_restored)
                     
-                    self.tracks.append({'id': p_id_restored,
-                        'cam_id': 0,
-                        'boxes': [],
-                        'timestamps': [0],
-                        'features': avg_feature_restored.copy(),
-                        'avg_feature': avg_feature_restored,
-                        'f_cluster': ClusterFeature(4, f_cluster_mat_restored)})
-                    
+                        self.tracks.append({'id': p_id_restored,
+                            'cam_id': 0,
+                            'boxes': [],
+                            'timestamps': [0],
+                            'features': avg_feature_restored.copy(),
+                            'avg_feature': avg_feature_restored,
+                            'f_cluster': ClusterFeature(4, f_cluster_mat_restored)})
+                        
                 except:
                     pass
                 """

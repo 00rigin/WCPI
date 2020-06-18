@@ -42,14 +42,14 @@ def on_message(mosq, obj, msg):
    json_load = json.loads(data)
    array.append(json_load)
    #pic_restored = np.array(json_load['pic'], dtype=np.uint8)
-   #####@@@p_id_restored = int(json_load['p_id'])
+   #p_id_restored = int(json_load['p_id'])
    #cam_id_restored = int(json_load['cam_id'])
    #s_time_restored = str(json_load['start_time1'])
    #e_time_restored = str(json_load['end_time1'])
    
    # 20200603 data that sending to pi
-   #####@@@@f_cluster_mat_restored = np.array(json_load['f_cluster_mat'], dtype = np.float32)
-   #####@@@avg_feature_restored = np.array(json_load['avg_feature'], dtype = np.float32)
+   #f_cluster_mat_restored = np.array(json_load['f_cluster_mat'], dtype = np.float32)
+   #avg_feature_restored = np.array(json_load['avg_feature'], dtype = np.float32)
    
    #print("p_id : ", p_id_restored)
    #print("cam_id : ", cam_id_restored)
