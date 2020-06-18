@@ -22,15 +22,15 @@ from scipy.spatial.distance import cosine, cdist
 
 from utils.misc import none_to_zero
 from comm.recv import RECV
-
+from comm.mqtt_subs import buffer 
 
 
 THE_BIGGEST_DISTANCE = 10.
 
 TrackedObj = namedtuple('TrackedObj', 'rect label') #20200511 변경함
 
-
-
+#test = buffer()
+#listq= test.get_list()
 
 class ClusterFeature:
     def __init__(self, feature_len, initial_feature=None):
@@ -115,7 +115,8 @@ class SingleCameraTracker:
          #20200529 리시브모듈 테스트용 
         self.recv = RECV()
         self.flag = True
-
+        self.test = buffer() # class 
+        self.listq = self.test.get_list() # array return
 
     def process(self, frame, detections, mask=None): 
         reid_features = [None]*len(detections)
@@ -128,7 +129,9 @@ class SingleCameraTracker:
         if self.time % self.time_window == 0:
             self._create_new_tracks(detections, reid_features, assignment)
             self._merge_tracks()
-
+        #test = buffer()
+        
+            
         self.add_recv_tracks()#20200529 리시브한 데이터 리스트에 추가하는 함수 콜하는 부분.
         self.time += 1
         
@@ -142,7 +145,34 @@ class SingleCameraTracker:
     ## (๑´ڡ`๑) recv 에 대한 테스트용 20200529
     def add_recv_tracks(self):
         if self.time > 0 and self.time % self.time_window == 0:
+            if not self.listq:
+                pass
+            else:
+                try:
+                    add_data = self.listq.pop(0)
+                    p_id_restored = int(add_data['p_id'])
+                    #np.array(json_load['f_cluster_mat'], dtype = np.float32)
+                    f_cluster_mat_restored = np.array(add_data['f_cluster_mat'], dtype = np.float64)
+                    avg_feature_restored = np.array(add_data['avg_feature'], dtype = np.float64)
+                    #str(data['avg_feature'])
+                    #test_ = str(data['start_time1'])
+                    print("p_id : ", p_id_restored)
+                    print("f_cluster_mat_restored : ", f_cluster_mat_restored)
+                    print("avg_feature_restored : ", avg_feature_restored)
+                    
+                    self.tracks.append({'id': p_id_restored,
+                        'cam_id': 0,
+                        'boxes': [],
+                        'timestamps': [0],
+                        'features': avg_feature_restored.copy(),
+                        'avg_feature': avg_feature_restored,
+                        'f_cluster': ClusterFeature(4, f_cluster_mat_restored)})
+                    
+                except:
+                    pass
+                """
                 if(self.flag):
+                    
                     add_data = self.recv.recov_file(True)
                     self.flag = False
                     self.tracks.append({'id': add_data['id'],
@@ -152,6 +182,7 @@ class SingleCameraTracker:
                         'features': add_data['avg_feature'].copy(),
                         'avg_feature': add_data['avg_feature'],
                         'f_cluster': ClusterFeature(4, add_data['f_cluster_mat'])})
+                """
         
         
         
