@@ -69,6 +69,10 @@ class ClusterFeature:
 def clusters_distance(clusters1, clusters2):
 
     if len(clusters1) > 0 and len(clusters2) > 0:
+
+        # print(clusters1.get_clusters_matrix().shape)
+        # print(clusters2.get_clusters_matrix().shape)
+
         distances = cdist(clusters1.get_clusters_matrix(),
                           clusters2.get_clusters_matrix(), 'cosine')
         return np.amin(distances)
@@ -77,6 +81,8 @@ def clusters_distance(clusters1, clusters2):
 
 def clusters_vec_distance(clusters, feature):
     if len(clusters) > 0 and feature is not None:
+        # print(clusters.get_clusters_matrix().shape)
+        # print(feature.shape)
         distances = cdist(clusters.get_clusters_matrix(),
                           feature.reshape(1, -1), 'cosine')
         return np.amin(distances)
@@ -90,6 +96,7 @@ class SingleCameraTracker:
                  time_window=10,
                  continue_time_thresh=2,
                  track_clear_thresh=3000,
+                 #match_threshold=0.4,
                  match_threshold=0.4,
                  merge_thresh=0.35,
                  n_clusters=4,
@@ -118,7 +125,11 @@ class SingleCameraTracker:
         self.test = buffer() # class 
         self.listq = self.test.get_list() # array return
 
-    def process(self, frame, detections, mask=None): 
+    def process(self, frame, detections, mask=None):
+
+
+
+
         reid_features = [None]*len(detections)
 
 
@@ -136,11 +147,13 @@ class SingleCameraTracker:
         self.time += 1
         
         #20200529 self.tracks 확인용
-        """
-        for t in self.tracks:
-            print(t['id'])
         print("********")
-        """
+        for t in self.tracks:
+            print("tracks : "+str(t['id']))
+            # print("tracks : "+str(t['timestamps']))
+
+
+
     
     ## (๑´ڡ`๑) recv 에 대한 테스트용 20200529
     def add_recv_tracks(self):
@@ -151,27 +164,40 @@ class SingleCameraTracker:
                 try:
                     while (self.listq):
                         add_data = self.listq.pop(0)
+                        #add_data[p_id_restored]
+                        #print(add_data)
                         p_id_restored = int(add_data['p_id'])
                         #np.array(json_load['f_cluster_mat'], dtype = np.float32)
-                        f_cluster_mat_restored = np.array(add_data['f_cluster_mat'], dtype = np.float64)
-                        avg_feature_restored = np.array(add_data['avg_feature'], dtype = np.float64)
+                        f_cluster_mat_restored = np.array(add_data['f_cluster_mat'], dtype = np.float32)
+                        avg_feature_restored = np.array(add_data['avg_feature'], dtype = np.float32)
+                        timestamp_restored = list(add_data['timestamps'])
+
                         #str(data['avg_feature'])
                         #test_ = str(data['start_time1'])
-                        print("p_id : ", p_id_restored)
-                        print("f_cluster_mat_restored : ", f_cluster_mat_restored)
-                        print("avg_feature_restored : ", avg_feature_restored)
+                        #print("p_id : ", p_id_restored)
+                        #print("f_cluster_mat_restored : ", f_cluster_mat_restored)
+                       # print("avg_feature_restored : ", avg_feature_restored[:20])
+
+
+
                     
                         self.tracks.append({'id': p_id_restored,
                             'cam_id': 0,
-                            'boxes': [],
-                            'timestamps': [0],
-                            'features': avg_feature_restored.copy(),
+                            'boxes': [[10,20,30,40]],
+                            'timestamps': timestamp_restored,
+                            'features': list(avg_feature_restored.copy()),
                             'avg_feature': avg_feature_restored,
-                            'f_cluster': ClusterFeature(4, f_cluster_mat_restored)})
-                        
+                            'f_cluster': ClusterFeature(len(list(avg_feature_restored.copy())), list(avg_feature_restored.copy()))})
+                            # 'f_cluster': ClusterFeature(4, f_cluster_mat_restored)})
+
+
                 except:
                     pass
-                """
+
+        # for track in self.tracks:
+        #     print(track['id'])
+        #     print(track['avg_feature'][0][0][0])
+            """
                 if(self.flag):
                     
                     add_data = self.recv.recov_file(True)
@@ -312,6 +338,8 @@ class SingleCameraTracker:
                         track1['avg_feature'] is not None and track2['avg_feature'] is not None:
 
                         f_avg_dist = cosine(track1['avg_feature'], track2['avg_feature'])
+                        print(track1['id'])
+                        print(track2['id'])
                         f_clust_dist = clusters_distance(track1['f_cluster'], track2['f_cluster'])
                         distance_matrix[i, j] = min(f_avg_dist, f_clust_dist)
                 else:
@@ -351,7 +379,10 @@ class SingleCameraTracker:
                                             self.tracks[idx]['avg_feature'])
             self.tracks[i]['timestamps'] += self.tracks[idx]['timestamps']
             self.tracks[i]['boxes'] += self.tracks[idx]['boxes']
+            #print(str(self.tracks[i]['id'])+str(self.tracks[i]['features'].shape))
+
             self.tracks[i]['features'] += self.tracks[idx]['features']
+
             self.tracks[i]['avg_feature'] /= len(self.tracks[i]['features'])
             self.tracks[idx] = None
         else:

@@ -64,9 +64,9 @@ class MultiCameraTracker:
             #all_tracks 에 모든정보 들어있음. id, camid, features, avg_freater, f_cluster_feature
  
         # for make json file
-        """
-        print(all_tracks)
-        """
+
+        # print(all_tracks)
+
         #print(all_tracks[0]['f_cluster'])
         #print(all_tracks[0]['id'])
         #print(type(all_tracks[0]['f_cluster']))

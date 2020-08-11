@@ -20,8 +20,8 @@ class MulticamCapture:
                 log.info('Connection  cam {}'.format(id))
                 cap = cv.VideoCapture(id)
                 # CPU 쓸때
-                cap.set(cv.CAP_PROP_FRAME_WIDTH, 1280)
-                cap.set(cv.CAP_PROP_FRAME_HEIGHT, 720)
+                cap.set(cv.CAP_PROP_FRAME_WIDTH, 640)
+                cap.set(cv.CAP_PROP_FRAME_HEIGHT, 480)
                 # MTRIAD 쓸때
                 #cap.set(cv.CAP_PROP_FRAME_WIDTH, 320)
                 #cap.set(cv.CAP_PROP_FRAME_HEIGHT, 240)

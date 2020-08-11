@@ -90,6 +90,7 @@ class JotTable:
             if track['id'] == int(send_table[0]):
                 f_cluster_mat = track['f_cluster'].get_clusters_matrix() #f_cluster 의 진짜 모습 두둥!!
                 avg_feature = track['avg_feature']
+                send_time = track['timestamps'] #2020811 for send timestamp -JUN
                 # 리스트로 저장시
                 # print(type(f_cluster_mat), type(avg_feature))
                                 
@@ -101,7 +102,8 @@ class JotTable:
                         'cam_id' : 1,
                         'start_time1' : send_table[2],
                         'end_time1' : send_table[3],
-                        'pic': self.t_pic[int(send_table[0])].tolist()}
+                        'pic': self.t_pic[int(send_table[0])].tolist()
+                        'timestamps' : send_time}
                 """
                 data_cluster = {'p_id' : send_table[0],
                                 'f_cluster_mat' : f_cluster_mat.tolist(),

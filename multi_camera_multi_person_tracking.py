@@ -25,7 +25,7 @@ log.basicConfig(stream=sys.stdout, level=log.DEBUG)
 
 
 
-
+#camera
 class FramesThreadBody:
     def __init__(self, capture, max_queue_length=2):
         self.process = True
@@ -92,13 +92,17 @@ def run(params, capture, detector, reid, jot): #params : args 임
         feature_data = tracker.process(frames, all_detections, all_masks)
         tracked_objects = tracker.get_tracked_objects()
 
+
+
         #20200511 추가
         track_data = copy.deepcopy(feature_data)
         for track in track_data:
             del track['features']
             del track['boxes']
-            del track['timestamps']
+            #del track['timestamps'] -20200811 for send timestamp -JUN
             del track['cam_id']
+
+
 
         #jottable 넘기는 함수 콜
         jot.check_jot(tracked_objects, frames, track_data)
@@ -134,20 +138,20 @@ def main():
                         of cameras or paths to video files)', required=True)
 
     #parser.add_argument('-m', '--m_detector', type=str, required=True,  help='Path to the person detection model')
-    parser.add_argument('-m', '--m_detector', type=str, default='model/person-detection-retail-0013.xml')
+    parser.add_argument('-m', '--m_detector', type=str, default='model/face-detection-retail-0004.xml')
     parser.add_argument('--t_detector', type=float, default=0.6,
                         help='Threshold for the person detection model')
 
     #parser.add_argument('--m_reid', type=str, required=True, help='Path to the person reidentification model')
-    parser.add_argument('--m_reid', type=str, default='model/person-reidentification-retail-0031.xml')
+    parser.add_argument('--m_reid', type=str, default='model/face-reidentification-retail-0095.xml')
 
     parser.add_argument('--output_video', type=str, default='', required=False)
     #parser.add_argument('--config', type=str, default='', required=False)
     parser.add_argument('--config', type=str, default='config.py', required=False)
     parser.add_argument('--history_file', type=str, default='', required=False)
 
-    #parser.add_argument('-d', '--device', type=str, default='CPU')
-    parser.add_argument('-d', '--device', type=str, default='MYRIAD')
+    parser.add_argument('-d', '--device', type=str, default='CPU')
+    #parser.add_argument('-d', '--device', type=str, default='MYRIAD')
     parser.add_argument('-l', '--cpu_extension',
                         help='MKLDNN (CPU)-targeted custom layers.Absolute \
                               path to a shared library with the kernels impl.',
@@ -165,7 +169,7 @@ def main():
     log.info("Creating Inference Engine")
     ie = IECore() #추론엔진 인터페이스 지정하기 (https://docs.openvinotoolkit.org/2019_R3/classie__api_1_1IECore.html)
 
-    
+
     person_detector = Detector(ie, args.m_detector, args.t_detector,
                                args.device, args.cpu_extension,
                                capture.get_num_sources())
